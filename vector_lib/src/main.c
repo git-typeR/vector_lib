@@ -31,8 +31,8 @@ int main(void)
     ROT_MAT_T rot_mat[MAX_ROT_MAT_ROW][MAX_ROT_MAT_COL] = {{1,0,0},{0,1,0},{0,0,1}};
     int32_t* pD;
 
-    VEC_COMPO_INT_T  ans = 0;
-    VECTOR_RESULT_T  rc  = 0;
+    VEC_COMPO_INT_T    ans = 0;
+    VECTOR_RELATION_T  rc  = 0;
     pD = (int32_t*)&vector_D;
 
     vector_D.x = 1;
@@ -82,7 +82,7 @@ int main(void)
     printf("%2d\n", ans);
 
     printf("Judge orthogonal\n");
-    rc = judge_vector_orth(&vector_A, &vector_B); 
+    rc = judge_orth_vector(&vector_A, &vector_B); 
     if (rc == VECTOR_ORTHGONAL) {
         printf("vector_A and vector_B are orthogonal.\n");
     } else if (rc == VECTOR_NON_ORTHGONAL){
@@ -92,7 +92,7 @@ int main(void)
     }
 
     printf("Judge parallel\n");
-    rc = judge_vector_para(&vector_A, &vector_B); 
+    rc = judge_para_vector(&vector_A, &vector_B); 
     if(rc == VECTOR_PARALLEL) {
         printf("vector_A and vector_B are parallel.\n");
     } else if (rc == VECTOR_NON_PARALLEL){

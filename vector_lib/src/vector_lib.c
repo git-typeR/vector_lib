@@ -11,12 +11,12 @@
 
 #include <string.h>
 #include <math.h>
+#include "vector_system.h"
 #include "vector_lib.h"
 
 
 
 
-uint32_t g_error_flag = 0;
 
 /**
  * @brief 
@@ -38,6 +38,7 @@ VECTOR_RESULT_T vector_scr_mul(const VECTOR_T* data1, VEC_COMPO_INT_T scalar, VE
     return result;
 
 }
+
 /**
  * @brief 
  * 
@@ -131,7 +132,6 @@ VECTOR_RESULT_T vector_outer_prod(const VECTOR_T* data1, const VECTOR_T* data2, 
  * @param output 
  * @return VECTOR_RESULT_T 
  */
-
 VECTOR_RESULT_T vector_det(const VECTOR_T* data1, const VECTOR_T* data2, VEC_COMPO_INT_T* output)
 {
     VECTOR_RESULT_T result = VECTOR_FAILURE;
@@ -149,7 +149,7 @@ VECTOR_RESULT_T vector_det(const VECTOR_T* data1, const VECTOR_T* data2, VEC_COM
  * @param output 
  * @return VECTOR_RESULT_T 
  */
-VECTOR_RESULT_T VEC_COMPO_INT_Trans(const VECTOR_T* data1, const VECTOR_T* output)
+VECTOR_RESULT_T trans(const VECTOR_T* data1, const VECTOR_T* output)
 {
     VECTOR_RESULT_T result = VECTOR_FAILURE;
 
@@ -184,11 +184,25 @@ VECTOR_RESULT_T vector_norm(const VECTOR_T* data1, VEC_COMPO_INT_T* output)
  * @param output 
  * @return VECTOR_RESULT_T 
  */
-VECTOR_RESULT_T vector_proj(const VECTOR_T* data1, VECTOR_T* output)
+VECTOR_RESULT_T vector_proj(const VECTOR_T* data1, const VECTOR_T* data2, VECTOR_T* output)
 {
     VECTOR_RESULT_T result = VECTOR_FAILURE;
+    VEC_COMPO_INT_T ans        = 0;
+    VEC_COMPO_INT_T abs_sqaure = 0;
+
+    
+    vector_inner_prod(data1, data2, &ans);
+    vector_inner_prod(data1, data1, &abs_sqaure);
+    if (abs_sqaure == 0) {
+        vector_write_error((VEC_ERRO_T)PROJ_ZERO_DIV); 
+        result = VECTOR_FAILURE;
+        goto IMMEDIATE_RETURN;
+    }
+    vector_scr_mul(data1, ans/abs_sqaure, output);
 
     result = VECTOR_SUCCESS;
+
+IMMEDIATE_RETURN:
     return result;
 
 }
@@ -200,7 +214,7 @@ VECTOR_RESULT_T vector_proj(const VECTOR_T* data1, VECTOR_T* output)
  * @param data2 
  * @return VECTOR_RESULT_T 
  */
-VECTOR_RESULT_T judge_vector_orth(const VECTOR_T* data1, const VECTOR_T* data2)
+VECTOR_RELATION_T judge_orth_vector(const VECTOR_T* data1, const VECTOR_T* data2)
 {
     VECTOR_RESULT_T result = VECTOR_FAILURE;
     VEC_COMPO_INT_T ans = (VEC_COMPO_INT_T)INNER_PROD_PARA_FWD;
@@ -222,7 +236,7 @@ VECTOR_RESULT_T judge_vector_orth(const VECTOR_T* data1, const VECTOR_T* data2)
  * @param data2 
  * @return VECTOR_RESULT_T 
  */
-VECTOR_RESULT_T judge_vector_para(const VECTOR_T* data1, const VECTOR_T* data2)
+VECTOR_RELATION_T judge_para_vector(const VECTOR_T* data1, const VECTOR_T* data2)
 {
     VECTOR_RESULT_T result = VECTOR_FAILURE;
     VEC_COMPO_INT_T ans    = (VEC_COMPO_INT_T)INNER_PROD_ORTH;
